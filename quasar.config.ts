@@ -3,10 +3,13 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
+import { QuasarConf } from '@quasar/app-vite/types/configuration/conf';
 import { configure } from 'quasar/wrappers';
 
+import path from 'node:path';
+
 export default configure((/* ctx */) => {
-    return {
+    const config: QuasarConf = {
         // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
         // preFetch: true,
 
@@ -39,7 +42,15 @@ export default configure((/* ctx */) => {
                 node: 'node20'
             },
 
-            vueRouterMode: 'history' // available values: 'hash', 'history'
+            vueRouterMode: 'history', // available values: 'hash', 'history'
+
+            alias: {
+                '@components': path.join(__dirname, './src/components'),
+                '@pages': path.join(__dirname, './src/pages'),
+                '@utils': path.join(__dirname, './src/utils'),
+                '@mixins': path.join(__dirname, './src/mixins')
+            }
+
             // vueRouterBase,
             // vueDevtools,
             // vueOptionsAPI: false,
@@ -55,7 +66,6 @@ export default configure((/* ctx */) => {
             // polyfillModulePreload: true,
             // distDir
 
-            // extendViteConf (viteConf) {},
             // viteVuePluginOptions: {},
 
             // vitePlugins: [
@@ -179,6 +189,7 @@ export default configure((/* ctx */) => {
                 // win32metadata: { ... }
             },
 
+            // @ts-ignore
             builder: {
                 // https://www.electron.build/configuration/configuration
 
@@ -194,4 +205,6 @@ export default configure((/* ctx */) => {
             contentScripts: ['my-content-script']
         }
     };
+
+    return config;
 });
