@@ -8,7 +8,7 @@
     },
 
     "permissions": ["storage", "tabs", "activeTab"],
-    "host_permissions": ["*://*/*"],
+    "host_permissions": ["https://trello.com/b/*"],
 
     "action": {
         "default_popup": "www/index.html#/popup"
@@ -20,7 +20,7 @@
 
     "content_scripts": [
         {
-            "matches": ["*://*/*"],
+            "matches": ["https://trello.com/b/*"],
             "css": ["assets/content.css"],
             "js": ["my-content-script.js"]
         }
