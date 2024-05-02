@@ -1,0 +1,36 @@
+{
+    "name": "trello2obsidian",
+    "version": "0.0.1",
+    "description": "Trello to Obsidian",
+    "productName": "Trello to Obsidian",
+    "author": "neyasbltb88 <neyasbltb_88@mail.ru>",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "quasar dev",
+        "build": "quasar build",
+        "dev:bex": "quasar dev -m bex",
+        "build:bex": "quasar build -m bex",
+        "format": "prettier . --write"
+    },
+    "dependencies": {
+        "@quasar/extras": "^1.16.4",
+        "axios": "^1.2.1",
+        "events": "^3.3.0",
+        "quasar": "^2.6.0",
+        "vue": "^3.4.18",
+        "vue-router": "^4.0.12"
+    },
+    "devDependencies": {
+        "@quasar/app-vite": "^2.0.0-beta.5",
+        "@types/node": "^20.5.9",
+        "autoprefixer": "^10.4.2",
+        "prettier": "^3.2.5",
+        "typescript": "~5.3.0"
+    },
+    "engines": {
+        "node": "^24 || ^22 || ^20 || ^18",
+        "npm": ">= 6.13.4",
+        "yarn": ">= 1.21.1"
+    }
+}
