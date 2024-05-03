@@ -41,4 +41,5 @@ const onClick = (e: MouseEvent) => {
 .DefaultPopup
     width: 300px
     height: 400px
+    padding: 8px
 </style>
