@@ -1,0 +1,199 @@
+@mixin fit-height($height: none)
+    display: flex !important
+    flex-direction: column
+    align-self: stretch
+    flex-grow: 1
+    @if $height != none
+        height: $height
+
+@mixin fit-height-selectors($height: none, $selectors...)
+    @if length($selectors) > 0
+        @for $i from 0 to length($selectors)
+            #{nth($selectors, $i + 1)}
+                display: flex !important
+                flex-direction: column
+                align-self: stretch
+                flex-grow: 1
+                @if $height != none
+                    height: $height
+                @else
+    @else
+        display: flex
+        flex-direction: column
+        align-self: stretch
+        flex-grow: 1
+        @if $height != none
+            height: $height
+
+@mixin color-opacity($color, $opacity: 1)
+    background: $color
+    background: rgba($color, $opacity)
+
+@mixin loading-gradient($duration, $color1, $color2: transparent)
+    background: repeating-linear-gradient(-45deg, $color1, $color1 20px, $color2 20px, $color2 40px)
+    background-size: 56px 56px
+    animation: loading-gradient-animation $duration infinite linear forwards
+
+@mixin glass-effect($opacity: 0.32, $blur: 32px, $color: #E8ECEF)
+    @supports (backdrop-filter: blur($blur))
+        background: rgba($color, $opacity)
+        backdrop-filter: blur($blur)
+    @supports not (backdrop-filter: blur($blur))
+        background: rgba($color, $opacity * 2.5)
+
+@mixin ms-theme-popup()
+    border-radius: var(--ms-theme-popup-radius) !important
+    box-shadow: var(--shadow-theme) !important
+    border: 1px solid var(--ms-theme-base) !important
+
+@mixin page-block()
+    box-shadow: var(--block-shadow)
+    background-color: var(--ms-theme-white)
+    border-radius: 3px
+
+/** Миксин для отображения в элементе Material-иконки псевдоэлемента :before.
+ * В качестве иконки принимает ее код, который можно увидеть в секции "Code point" на странице поиска иконок:
+ * https://fonts.google.com/icons?selected=Material+Icons:group&icon.set=Material+Icons
+ */
+@mixin ms-icon($icon: none)
+    font-family: 'Material Icons'
+    font-weight: normal
+    font-style: normal
+    display: inline-block
+    text-transform: none
+    letter-spacing: normal
+    white-space: nowrap
+    direction: ltr
+    -webkit-font-smoothing: antialiased
+    text-rendering: optimizeLegibility
+    -moz-osx-font-smoothing: grayscale
+    font-feature-settings: 'liga'
+    line-height: 1
+    width: 1em
+    height: 1em
+    &:before
+        word-wrap: normal
+        text-align: center
+        position: relative
+        box-sizing: content-box
+        fill: currentColor
+        @if $icon != none
+            content: $icon
+    &:after
+        display: none
+
+/// Функция для вычисления гибких значений в заданных границах, относительно размеров вьюпорта.
+/// @param {number} $v-min Минимальное значение.
+/// @param {number} $v-max Максимальное значение.
+/// @param {number} $s-min Минимальный размер вьюпорта,
+/// при котором рассчитанное гибкое значение будет соответствовать $v-min.
+/// @param {number} $s-max Максимальный размер вьюпорта,
+/// при котором рассчитанное гибкое значение будет соответствовать $v-max.
+/// @param {string} $units [px] Единицы измерений для значений и размеров экрана.
+/// @param {string} $directionUnit [vw] Единицы измерения для размеров вьюпорта(vw или vh).
+/// @return Возвращает calc с рассчитанными значениями.
+/// @see https://habr.com/ru/post/310186/
+@function calcFluidSize($v-min, $v-max, $s-min, $s-max, $units: px, $directionUnit: vw)
+    $v-min: strip-unit($v-min)
+    $v-max: strip-unit($v-max)
+    $s-min: strip-unit($s-min)
+    $s-max: strip-unit($s-max)
+
+    $k: ($v-max - $v-min)/($s-max - $s-min)
+    $b: $v-min - $k * $s-min
+    $b: $b + #{$units}
+
+    @return calc( #{$k} * 100#{$directionUnit} + #{$b} )
+
+/** Функция для очистки числовых значений от единиц измерения, например: 100px -> 100 */
+@function strip-unit($number)
+    @if type-of($number) == 'number' and not unitless($number)
+        @return $number / ($number * 0 + 1)
+
+    @return $number
+
+/// Миксин, задающий гибкие значения font-size в заданных пределах в зависимости от размеров вьюпорта.
+/// @param {number} $v-min Минимальное значение размера шрифта.
+/// @param {number} $v-max Максимальное значение размера шрифта.
+/// @param {number} $s-min Минимальный размер вьюпорта,
+/// при котором рассчитанное гибкое значение будет соответствовать $v-min.
+/// При меньших размерах значение останется на том же уровне $v-min.
+/// @param {number} $s-max Максимальный размер вьюпорта,
+/// при котором рассчитанное гибкое значение будет соответствовать $v-max.
+/// При больших размерах значение останется на том же уровне $v-max.
+/// @param {'width' | 'height'} $direction ['width'] На какое направление размеров экрана ориентироваться:
+/// либо на ширину, либо на высоту. По дефолту: ширина.
+@mixin fluidFontSize($v-min, $v-max, $s-min, $s-max, $direction: 'width')
+    font-size: $v-min
+
+    $directionUnit: vw
+    @if $direction != 'width'
+        $directionUnit: vh
+
+    @media (min-#{$direction}: $s-min)
+        font-size: calcFluidSize($v-min, $v-max, $s-min, $s-max, px, $directionUnit)
+    @media (min-#{$direction}: $s-max)
+        font-size: $v-max
+
+/// Миксин, задающий гибкие значения line-height в заданных пределах в зависимости от размеров вьюпорта.
+/// @param {number} $v-min Минимальное значение высоты строки.
+/// @param {number} $v-max Максимальное значение высоты строки.
+/// @param {number} $s-min Минимальный размер вьюпорта,
+/// при котором рассчитанное гибкое значение будет соответствовать $v-min.
+/// При меньших размерах значение останется на том же уровне $v-min.
+/// @param {number} $s-max Максимальный размер вьюпорта,
+/// при котором рассчитанное гибкое значение будет соответствовать $v-max.
+/// При больших размерах значение останется на том же уровне $v-max.
+/// @param {'width' | 'height'} $direction ['width'] На какое направление размеров экрана ориентироваться:
+/// либо на ширину, либо на высоту. По дефолту: ширина.
+@mixin fluidLineHeight($v-min, $v-max, $s-min, $s-max, $direction: 'width')
+    line-height: $v-min
+
+    $directionUnit: vw
+    @if $direction != 'width'
+        $directionUnit: vh
+
+    @media (min-#{$direction}: $s-min)
+        line-height: calcFluidSize($v-min, $v-max, $s-min, $s-max, px, $directionUnit)
+    @media (min-#{$direction}: $s-max)
+        line-height: $v-max
+
+/// Миксин регистрации цветов для квазара.
+/// Для использования миксина нужно объвить глобальную переменную с цветом, например:
+/// \:root
+///     --ms-theme-white: #FFFFFF
+/// Затем вызвать миксин, передав ему название цвета без дефисов в начале:
+/// @include color-register(ms-theme-white)
+@mixin color-register($name)
+    \:root
+        // --q-color-#{$name}: var(--#{$name})
+        // FIXME: В Q2 имена цветов больше не должны содержать -color-
+        --q-#{$name}: var(--#{$name})
+    .text-#{$name}
+        color: var(--#{$name}) !important
+    .bg-#{$name}
+        background: var(--#{$name}) !important
+
+/// Миксин регистрации цветов для квазара.
+/// Для использования миксина нужно объвить глобальную переменную с цветом, например:
+/// \:root
+///     --ms-theme-white: #FFFFFF
+/// Затем вызвать миксин, передав ему название цвета без дефисов в начале:
+/// @include color-register(ms-theme-white)
+@mixin color-register-by-color($name, $color)
+    \:root
+        // --q-color-#{$name}: var(--#{$name})
+        // FIXME: В Q2 имена цветов больше не должны содержать -color-
+        --q-#{$name}: #{$color}
+    .text-#{$name}
+        color: var(--q-#{$name}) !important
+    .bg-#{$name}
+        background: var(--q-#{$name}) !important
+
+/// Миксин для ограничения количества строк текста в блоке
+@mixin line-clamp($lines: 1)
+    overflow: hidden
+    text-overflow: ellipsis
+    display: -webkit-box
+    -webkit-box-orient: vertical
+    -webkit-line-clamp: $lines
