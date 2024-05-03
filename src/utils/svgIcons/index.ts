@@ -7,7 +7,7 @@ import { objectForEach, parseFilePath } from '@utils';
 
 const svgFiles: Record<string, string> = import.meta.glob('./icons/*.svg', {
     eager: true,
-    query: '?url',
+    query: '?raw',
     import: 'default'
 });
 
@@ -22,7 +22,6 @@ const importAll = (r: Record<string, string>) => {
         const { name } = parseFilePath(path);
         if (!name) return;
 
-        icon = decodeURIComponent(icon).replace('data:image/svg+xml,', '');
         icons[name] = icon;
     });
 };
