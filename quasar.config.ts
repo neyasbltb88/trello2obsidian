@@ -48,7 +48,8 @@ export default configure((/* ctx */) => {
                 '@components': path.join(__dirname, './src/components'),
                 '@pages': path.join(__dirname, './src/pages'),
                 '@utils': path.join(__dirname, './src/utils'),
-                '@mixins': path.join(__dirname, './src/mixins')
+                '@mixins': path.join(__dirname, './src/mixins'),
+                '@models': path.join(__dirname, './src/models')
             }
 
             // vueRouterBase,

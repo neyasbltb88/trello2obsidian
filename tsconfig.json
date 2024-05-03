@@ -6,7 +6,9 @@
             "@components/*": ["src/components/*"],
             "@pages/*": ["src/pages/*"],
             "@utils": ["src/utils"],
-            "@mixins/*": ["src/mixins/*"]
+            "@utils/*": ["src/utils/*"],
+            "@mixins/*": ["src/mixins/*"],
+            "@models/*": ["src/models/*"]
         }
     },
     "exclude": [
